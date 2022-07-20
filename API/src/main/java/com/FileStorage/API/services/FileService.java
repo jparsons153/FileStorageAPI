@@ -9,6 +9,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -16,6 +19,28 @@ public class FileService {
 
     @Autowired
     DatabaseFileRepository fileRepository;
+
+    public Long getDatabaseSize(){
+        long size = fileRepository.count();
+        return size;
+    }
+
+//    public List<DatabaseFile> getAllFiles(){
+//
+//        List<DatabaseFile> databaseFileList = new ArrayList<>();
+//
+//        Iterator<DatabaseFile> databaseFileIterator = fileRepository.findAll().iterator();
+//
+//        while(databaseFileIterator.hasNext()) {
+//            databaseFileList.toArray();
+//        }
+//
+//        return databaseFileList;
+//    }
+
+    public List<DatabaseFile> getAllFiles(){
+        return fileRepository.findAll();
+    }
 
     public DatabaseFile getFile(Long id) {
         if (fileRepository.findById(id).isEmpty()) {

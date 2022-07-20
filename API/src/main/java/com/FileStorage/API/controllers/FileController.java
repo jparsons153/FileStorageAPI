@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,6 +45,31 @@ public class FileController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", databaseFile.getFileName()))
                     .body(new ByteArrayResource(databaseFile.getData()));
         }
+    }
+
+//    @GetMapping("/files")
+//    public List<DatabaseFile> fileList(){
+//        List<DatabaseFile> databaseFile = fileService.getAllFiles();
+//    return databaseFile;
+//    }
+
+    @GetMapping("/files/ResponseEntity")
+    public ResponseEntity<?> fileResponseEntityMap(){
+
+        List<DatabaseFile> databaseFile = fileService.getAllFiles();
+
+        for (DatabaseFile file:databaseFile){
+            if (file == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found with id: " + file.getId());
+            } else {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(file.getFileType()))
+//                      .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getFileName()))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+                        .body(new ByteArrayResource(file.getData()));
+            }
+        }
+        return null;
     }
 
     @PutMapping("/uploadSingleFile/{id}")
